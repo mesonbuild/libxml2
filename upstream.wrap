@@ -1,0 +1,6 @@
+[wrap-file]
+directory = libxml2-2.9.2
+
+source_url = ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz
+source_filename = libxml2-2.9.2.tar.gz
+source_hash = 5178c30b151d044aefb1b08bf54c3003a0ac55c59c866763997529d60770d5bc
