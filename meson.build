@@ -1,4 +1,4 @@
-project('libxml2', 'c')
+project('libxml2', 'c', version : '2.9.2', license : 'mit')
 
 cdata = configuration_data()
 
@@ -126,15 +126,9 @@ incdir = include_directories('include')
 
 c_args = ['-D_REENTRANT']
 
-if get_option('shared_lib')
-  xml2lib = shared_library('xml2', sources,
-    c_args : c_args,
-    include_directories : incdir)
-else
-  xml2lib = static_library('xml2', sources,
-    c_args : c_args,
-    include_directories : incdir)
-endif
+xml2lib = library('xml2', sources,
+  c_args : c_args,
+   include_directories : incdir)
 
 dictexe = executable('testdict', 'testdict.c',
   include_directories : incdir,
