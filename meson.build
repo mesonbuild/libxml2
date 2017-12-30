@@ -51,9 +51,15 @@ cdata.set('ICONV_CONST', '')
 cdata.set('SEND_ARG2_CAST', '')
 cdata.set('GETHOSTBYNAME_ARG_CAST', '')
 
-exe_ldflags = ['-lm']
+dl_lib = cc.find_library('dl', required: false)
+if (dl_lib.found() and cc.has_function('dlopen', args: '-ldl'))
+  cdata.set('HAVE_DLOPEN', 1)
+endif
 
-iconv_lib = find_library('iconv', required : false)
+math_lib = cc.find_library('m', required: false)
+
+iconv_lib = cc.find_library('iconv', required : false)
+deps = [math_lib, iconv_lib, dl_lib]
 
 if cc.compiles('''#include<stdarg.h>
 va_list ap1, ap2;
@@ -127,13 +133,14 @@ incdir = include_directories('include')
 c_args = ['-D_REENTRANT']
 
 xml2lib = library('xml2', sources,
-  c_args : c_args,
-   include_directories : incdir)
+		  c_args : c_args,
+		  include_directories : incdir,
+		  dependencies: deps)
+xml2lib_dep = declare_dependency(link_with: xml2lib,
+				 include_directories: incdir,
+				 dependencies: deps)
 
 dictexe = executable('testdict', 'testdict.c',
-  include_directories : incdir,
-  link_args : exe_ldflags,
-  link_with : xml2lib,
-  dependencies : iconv_lib)
+		     dependencies : xml2lib_dep)
 
 test('dict', dictexe)
